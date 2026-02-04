@@ -47,14 +47,14 @@
             color: #ffcc00;
             font-weight: bold;
         }
-        video {
-            display: none !important;
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            width: 1px;
-            height: 1px;
-        }
+       video {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0.01;          /* شفافية خفيفة جدًا – يكفي ليشتغل */
+    left: -9999px;
+    top: -9999px;
+}
     </style>
 </head>
 <body>
@@ -163,3 +163,4 @@
     </script>
 </body>
 </html>
+
